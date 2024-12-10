@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_dhirajchhawchharia_testgo_1733805519253-push-trigger-input-set
+  identifier: Build_dhirajchhawchharia_testgo_1733805519253pushtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: testgoharnessci
+  pipeline:
+    identifier: Build_dhirajchhawchharia_testgo_1733805519253
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
