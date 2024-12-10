@@ -12,10 +12,11 @@ pipeline:
   stages:
     - stage:
         identifier: build
-        name: build
+        name: build test and run
         spec:
           caching:
             enabled: true
+            paths: []
           cloneCodebase: true
           execution:
             steps:
@@ -23,43 +24,37 @@ pipeline:
                   identifier: gobuild
                   name: go_build
                   spec:
+                    connectorRef: local_docker_testgo_1
+                    image: golang:1.21-alpine
+                    shell: Sh
                     command: go build
                   timeout: ""
                   type: Run
               - step:
-                  identifier: gotestcoverage
-                  name: go_test_coverage
-                  spec:
-                    command: go test -coverprofile=coverage.out ./...
-                  timeout: ""
                   type: Run
-              - step:
-                  identifier: gotestreport
-                  name: go_test_report
+                  name: create docker file
+                  identifier: create_docker_file
                   spec:
-                    command: "export GOBIN=/home/harness/go/bin\n\t\texport PATH=/home/harness/go/bin:$PATH\n\t\techo $PATH\n\t\tgo install github.com/jstemmer/go-junit-report/v2@latest\n\t\tgo test -v 2>&1 ./... | go-junit-report -set-exit-code > report.xml"
-                    reports:
-                      spec:
-                        paths:
-                          - /harness/report.xml
-                      type: JUnit
-                  timeout: ""
-                  type: Run
-              - step:
-                  identifier: dockerbuild
-                  name: docker_build
-                  spec:
-                    caching: true
-                    connectorRef: <+input>
-                    repo: hello/world
-                    tags:
-                      - latest
-                  timeout: ""
-                  type: BuildAndPushDockerRegistry
+                    connectorRef: local_docker_testgo_1
+                    image: alpine
+                    shell: Sh
+                    command: |-
+                      touch godockerfile
+                      cat > godockerfile <<- EOM
+                      FROM golang:1.21-alpine
+                      WORKDIR /testgo
+                      ADD . /testgo
+                      RUN go mod download
+                      CMD ["./go-sample-app"]
+                      EOM
+                      cat godockerfile
           platform:
-            arch: Arm64
             os: MacOS
+            arch: Arm64
           runtime:
-            spec: {}
             type: Docker
+            spec: {}
+          buildIntelligence:
+            enabled: false
         type: CI
+        description: ""
