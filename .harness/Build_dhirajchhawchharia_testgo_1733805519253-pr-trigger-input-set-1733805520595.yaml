@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_dhirajchhawchharia_testgo_1733805519253-pr-trigger-input-set
+  identifier: Build_dhirajchhawchharia_testgo_1733805519253prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: testgoharnessci
+  pipeline:
+    identifier: Build_dhirajchhawchharia_testgo_1733805519253
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
