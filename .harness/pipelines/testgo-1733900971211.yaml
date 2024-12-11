@@ -9,7 +9,7 @@ pipeline:
         identifier: Build
         type: CI
         spec:
-          cloneCodebase: true
+          cloneCodebase: false
           execution:
             steps:
               - step:
@@ -17,17 +17,21 @@ pipeline:
                   name: Echo Welcome Message
                   identifier: Echo_Welcome_Message
                   spec:
+                    connectorRef: account.harnessImage
+                    image: harness/drone-git:1.6.2
                     shell: Sh
-                    command: echo "Welcome to Harness CI"
+                    command: |-
+                      echo "Welcome to Harness CI"
+                      sleep 1000
           platform:
             os: MacOS
             arch: Arm64
           runtime:
             type: Docker
             spec: {}
-  properties:
-    ci:
-      codebase:
-        connectorRef: account.Github
-        repoName: testgo
-        build: <+input>
+          caching:
+            enabled: false
+            paths: []
+          buildIntelligence:
+            enabled: false
+        description: ""
